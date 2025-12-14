@@ -26,8 +26,8 @@ st.title("LLM Benchmarking")
 st.subheader("Compare as many LLMs as you want side by side")
 st.divider()
 
-client = genai.Client(api_key="")
-groq_client = Groq(api_key="")
+client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+groq_client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
 def call_gemini(prompt):
     start = time.time()
@@ -43,7 +43,7 @@ def call_gemini(prompt):
 
 def call_llama(prompt):
     start = time.time()
-    response = groq_client.chat.completions.create(model="llama-3.1-8b-instant",
+    response_groq = groq_client.chat.completions.create(model="llama-3.1-8b-instant",
                                                    messages=[{"role": "user", "content": prompt}], temperature=0.5)
     end = time.time()
     content = response_groq.choices[0].message
@@ -64,22 +64,22 @@ if prompt:
     if use_groq:
         comparisions.append("Llama-3.1")
         
-    cols = st.columns(len(comparisons))
+    cols = st.columns(len(comparisions))
     results = []
     
-    for i, comparisions_name in enumerate(comparisions):
+    for i, comparision_name in enumerate(comparisions):
         with cols[i]:
-            st.subheader(comparison_name)
-            if comparisions_name == "Gemini 2.5 Flash":
-                response, latency, tokens=call_gemini(prompt)
+            st.subheader(comparision_name)
+            if comparision_name == "Gemini 2.5 Flash":
+                content, latency, tokens=call_gemini(prompt)
             else:
-                response, latency, tokens=call_llama(prompt)
+                content, latency, tokens=call_llama(prompt)
         st.caption(f"Response Time(Latency): {latency:.2f} seconds | Tokens Used: {tokens}")
         st.write(content)
         
         if latency > 0:
             results.append({
-                "Model": comparison_name,
+                "Model": comparision_name,
                 "Latency (s)": latency,
                 "Tokens Used": tokens,
                 "Throughput (tokens/s)": tokens / latency,
