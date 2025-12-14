@@ -15,6 +15,7 @@ Filepath:
 
 import streamlit as st
 from google import genai
+from groq import Groq
 import time
 import pandas as pd
 import plotly.express as px
@@ -24,3 +25,19 @@ st.set_page_config(page_title="LLM Benchmarking", layout="wide")
 st.title("LLM Benchmarking")
 st.subheader("Compare as many LLMs as you want side by side")
 st.divider()
+
+client = genai.Client(api_key="")
+groq_client = Groq(api_key="")
+
+def call_gemini(prompt):
+    start = time.time()
+    response = client.models.generate_content(model="gemini-2.5-flash",
+                                              contents=prompt)
+    end = time.time()
+    
+    if response.usage_metadata:
+        token_count = response.usage_metadata.total_token_count
+    else:
+        token_count = len(response.text) // 4  # Rough estimate if metadata is unavailable
+    latency = end - start
+    return response.text, latency, token_count 
