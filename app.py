@@ -91,5 +91,14 @@ if prompt:
         st.subheader("Benchmark Results")
         st.dataframe(df)
         
+        fig = px.bar(df, x="Model", y="Throughput (tokens/s)", title="Model Throughput Comparison")
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Added Latency Comparison Chart
         fig = px.bar(df, x="Model", y="Latency (s)", title="Model Latency Comparison")
         st.plotly_chart(fig, use_container_width=True)
+        
+        # Added Cost Comparison Chart
+        fig = px.bar(df, x="Model", y="Cost (USD)", title="Model Cost Comparison")
+        st.plotly_chart(fig, use_container_width=True)
+        
