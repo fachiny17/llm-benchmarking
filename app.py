@@ -34,10 +34,18 @@ def call_gemini(prompt):
     response = client.models.generate_content(model="gemini-2.5-flash",
                                               contents=prompt)
     end = time.time()
-    
     if response.usage_metadata:
         token_count = response.usage_metadata.total_token_count
     else:
         token_count = len(response.text) // 4  # Rough estimate if metadata is unavailable
     latency = end - start
-    return response.text, latency, token_count 
+    return response.text, latency, token_count
+
+def call_llama(prompt):
+    start = time.time()
+    response = groq_client.chat.completions.create(model="llama-3.1-8b-instant",
+                                                   messages=[{"role": "user", "content": prompt}], temperature=0.5)
+    end = time.time()
+    content = response_groq.choices[0].message
+    token_count = response_groq.usage.total_tokens
+    return content, end - start, token_count
