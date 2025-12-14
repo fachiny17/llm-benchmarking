@@ -49,3 +49,28 @@ def call_llama(prompt):
     content = response_groq.choices[0].message
     token_count = response_groq.usage.total_tokens
     return content, end - start, token_count
+
+with st.sidebar:
+    st.title("Choose models")
+    use_gemini = st.checkbox("Gemini 2.5 Flash", value=True)
+    use_groq = st.checkbox("Llama-3.1", value=True)
+    
+prompt = st.chat_input("Enter your prompt")
+
+if prompt:
+    comparisions =[]
+    if use_gemini:
+        comparisions.append("Gemini 2.5 Flash")
+    if use_groq:
+        comparisions.append("Llama-3.1")
+        
+    cols = st.columns(len(comparisons))
+    results = []
+    
+    for i, comparisions_name in enumerate(comparisions):
+        with cols[i]:
+            st.subheader(comparison_name)
+            if comparisions_name == "Gemini 2.5 Flash":
+                response, latency, tokens=call_gemini(prompt)
+            else:
+                response, latency, tokens=call_llama(prompt)
