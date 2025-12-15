@@ -9,4 +9,7 @@ Learn how to compare large language models side-by-side using Streamlit! In this
 - ✅ Deploy!
 
 ## Run Streamlit
+
+1. Isntall Steamlit: `pip install streamlit`
+
 `streamlit run app.py`
